@@ -1,5 +1,5 @@
 import db from '../../../libs/db';
-
+import jwt from 'jsonwebtoken';
 export default async function handler(req, res){
     const {authorization} = req.headers;
 
@@ -11,8 +11,12 @@ export default async function handler(req, res){
         authSplit[0],
         authSplit[1]
     ]
+    if (authType!=='bearer') return res.status(401).end();
+    const verify = jwt.verify(authToken, 'akuganteng');
+    console.log(verify);
 
     if(req.method !== 'GET') return res.status(405).end();
+
     const posts = await db('posts');
     
     res.status(200);
